@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import authRouter from './routes.js/auth.js';
 import postRouter from './routes.js/posts.js';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 require('dotenv').config();
 const connectDB = async () => {
@@ -23,6 +24,7 @@ connectDB();
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);

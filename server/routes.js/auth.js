@@ -1,11 +1,25 @@
 import express from "express";
 import User from '../models/User';
-import argon2 from "argon2";
+import argon2, { verify } from "argon2";
 import jwt from 'jsonwebtoken';
+import { verifyToken } from "../middlewares/auth";
+
 require('dotenv').config();
 
-
 const router = express.Router();
+
+router.get('/', verifyToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('-password');
+        if (!user) res.status(400).json({ success: false, message: 'User not found' });
+        res.json({ success: true, user });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Something is wrong' });
+    }
+})
+
 router.post('/register', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
