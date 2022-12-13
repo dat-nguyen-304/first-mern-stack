@@ -52,7 +52,7 @@
 a.post-button.btn:focus,
 a.post-button.btn:active {
   outline   : none;
-  background: transparent;
+  background: #78c2ad;
   border    : none;
   box-shadow: none;
 }
@@ -92,6 +92,10 @@ button.post-button.btn:active {
 }
 
 .tooltip .arrow::before {
+  border-left-color: #78c2ad;
+}
+
+.tooltip.bs-tooltip-start .tooltip-arrow::before {
   border-left-color: #78c2ad;
 }
 

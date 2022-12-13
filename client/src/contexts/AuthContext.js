@@ -1,4 +1,4 @@
-import { Children, createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useEffect } from "react";
 import { authReducer } from "../reducers/AuthReducer";
 import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from './constants';
 import setAuthToken from '../utils/setAuthToken';
@@ -45,7 +45,26 @@ const AuthContextProvider = ({ children }) => {
         }
     }
 
-    const AuthContextData = { loginUser, authState };
+    const registerUser = async userForm => {
+        try {
+            const response = await axios.post(`${apiUrl}/auth/register`, userForm);
+            if (response.data.success) {
+                localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.accessToken);
+            }
+            await loadUser();
+            return response.data;
+        } catch (error) {
+            if (error.response && error.response.data) return error.response.data;
+            else return { success: false, message: error.message };
+        }
+    }
+
+    const logoutUser = () => {
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
+        dispatch({ type: 'SET_AUTH', payload: { isAuthenticated: false, user: null } });
+    }
+
+    const AuthContextData = { loginUser, logoutUser, registerUser, authState };
 
     return (
         <AuthContext.Provider value={ AuthContextData }>
